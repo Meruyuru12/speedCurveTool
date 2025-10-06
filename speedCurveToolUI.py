@@ -8,7 +8,7 @@ import maya.OpenMayaUI as omui
 import os 
 
 ICON_PATH = os.path.join(os.path.dirname(__file__),'resources').replace("\\","/")
-print(ICON_PATH)
+
 class SpeedCurveTool(QtWidgets.QDialog):
 	def __init__(self, parent = None):
 		super().__init__(parent)
@@ -34,14 +34,17 @@ class SpeedCurveTool(QtWidgets.QDialog):
 		self.mainLayout.addWidget(self.imageLabel01)
 
 
-
-
 		self.buttonLayout = QtWidgets.QVBoxLayout()
 		self.mainLayout.addLayout(self.buttonLayout)
+
 		self.curveCreatorButton = QtWidgets.QPushButton("Curve Creator")
+		self.curveCreatorButton.clicked.connect(self.runCurveCreatorButton)
 		self.addAttributesButton = QtWidgets.QPushButton("Add Attributes")
+		self.addAttributesButton.clicked.connect(self.runAddAttributesButton)
 		self.connectionEditorButton = QtWidgets.QPushButton("Connection Editor")
+		self.connectionEditorButton.clicked.connect(self.runConnectionEditorButton)
 		self.exitButton = QtWidgets.QPushButton("Exit")
+		self.exitButton.clicked.connect(self.close)
 		self.curveCreatorButton.setStyleSheet(
 
 			'''
@@ -126,22 +129,73 @@ class SpeedCurveTool(QtWidgets.QDialog):
 			'''
 		)
 		
-
 		self.buttonLayout.addWidget(self.curveCreatorButton)
 		self.buttonLayout.addWidget(self.addAttributesButton)
 		self.buttonLayout.addWidget(self.connectionEditorButton)
 		self.buttonLayout.addWidget(self.exitButton)
 
-
 		self.mainLayout.addStretch()
 
+	def runProgram(self, name):
+		global ui
+		ui = name
+		try :
+			ui.close()
+		except:
+			pass
+
+		ptr = wrapInstance(int(omui.MQtUtil.mainWindow()),QtWidgets.QWidget)
+
+		if ui == "CurveCreatorTool":
+			ui = CurveCreatorTool(parent = ptr)
+			ui.show()
+		elif ui == "AddAttributesTool":
+			ui = AddAttributesTool(parent = ptr)
+			ui.show()
+		elif ui == "ConnectionEditorTool":
+			ui = ConnectionEditorTool(parent = ptr)
+			ui.show()
+
+	def runCurveCreatorButton(self):
+		self.close()
+		self.runProgram("CurveCreatorTool")
+
+	def runAddAttributesButton(self):
+		self.close()
+		self.runProgram("AddAttributesTool")
+
+	def runConnectionEditorButton(self):
+		self.close()
+		self.runProgram("ConnectionEditorTool")
+
+class CurveCreatorTool(QtWidgets.QDialog):
+	def __init__(self,parent=None):
+		super().__init__(parent)
+
+		self.setWindowTitle("CurveCreatorTool")
+		self.resize(300,300)
+
+class AddAttributesTool(QtWidgets.QDialog):
+	def __init__(self,parent=None):
+		super().__init__(parent)
+
+		self.setWindowTitle("AddAttributesTool")
+		self.resize(300,300)
+
+class ConnectionEditorTool(QtWidgets.QDialog):
+	def __init__(self,parent=None):
+		super().__init__(parent)
+
+		self.setWindowTitle("ConnectionEditorTool")
+		self.resize(300,300)
+
 def run():
-	global ui
+	global uiSpeedCurveTool
 	try :
-		ui.close()
+		uiSpeedCurveTool.close()
 	except:
 		pass
 
 	ptr = wrapInstance(int(omui.MQtUtil.mainWindow()),QtWidgets.QWidget)
-	ui = SpeedCurveTool(parent = ptr)
-	ui.show()
+	uiSpeedCurveTool = SpeedCurveTool(parent = ptr)
+	uiSpeedCurveTool.show()
