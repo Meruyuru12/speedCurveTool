@@ -20,7 +20,6 @@ ICON_PATH = os.path.join(os.path.dirname(__file__),'resources',"icons").replace(
 class SpeedCurveTool(QtWidgets.QDialog):
 	def __init__(self, parent = None):
 		super().__init__(parent)
-
 		self.setWindowTitle("SpeedCurveTool")
 		self.resize(300,300)
 
@@ -177,7 +176,7 @@ class SpeedCurveTool(QtWidgets.QDialog):
 class CurveCreatorTool(QtWidgets.QDialog):
 	def __init__(self,parent=None):
 		super().__init__(parent)
-
+		self.num = 1
 		self.colorRed = 0
 		self.colorGreen = 0
 		self.colorBlue = 0
@@ -295,7 +294,8 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		suffix = self.suffixComboBox.currentText()
 		curveShape = self.primitiveListWidgets.currentItem().text()
 		print("curveShape")
-		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue)
+		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,self.num)
+	
 
 	def goBack(self):
 		self.close()
