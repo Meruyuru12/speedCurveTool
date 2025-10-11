@@ -2,10 +2,12 @@ try:
 	from PySide6 import QtCore, QtGui, QtWidgets
 	from shiboken6 import wrapInstance
 	from PySide6.QtGui import QIntValidator
+
 except:
 	from PySide2 import QtCore, QtGui, QtWidgets
 	from shiboken2 import wrapInstance
 	from PySide2.QtGui import QIntValidator
+
 import importlib
 import maya.OpenMayaUI as omui
 import os 
@@ -176,6 +178,7 @@ class SpeedCurveTool(QtWidgets.QDialog):
 class CurveCreatorTool(QtWidgets.QDialog):
 	def __init__(self,parent=None):
 		super().__init__(parent)
+		self.countName = ""
 		self.num = 1
 		self.colorRed = 0
 		self.colorGreen = 0
@@ -294,8 +297,7 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		suffix = self.suffixComboBox.currentText()
 		curveShape = self.primitiveListWidgets.currentItem().text()
 		print("curveShape")
-		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,self.num)
-	
+		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue)
 
 	def goBack(self):
 		self.close()
@@ -333,11 +335,11 @@ class AddAttributesTool(QtWidgets.QDialog):
 		self.minLabel = QtWidgets.QLabel("Min : ")
 		self.minLineEdit = QtWidgets.QLineEdit()
 		self.minLineEdit.setValidator(QIntValidator())
-
-		self.maxMinLayout.addWidget(self.maxLabel)
-		self.maxMinLayout.addWidget(self.maxLineEdit)
+		
 		self.maxMinLayout.addWidget(self.minLabel)
 		self.maxMinLayout.addWidget(self.minLineEdit)
+		self.maxMinLayout.addWidget(self.maxLabel)
+		self.maxMinLayout.addWidget(self.maxLineEdit)
 
 		self.buttonLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.buttonLayout)
@@ -353,7 +355,11 @@ class AddAttributesTool(QtWidgets.QDialog):
 		self.close()
 		run()
 	def doAddAttributes(self):
-		pass
+		name = self.nameLineEdit.text()
+		type = self.typeComboBox.currentText()
+		maxValue = self.maxLineEdit.text()
+		minValue = self.minLineEdit.text()
+		STIL.addAttributes(name,type,maxValue,minValue)
 
 class ConnectionEditorTool(QtWidgets.QDialog):
 	def __init__(self,parent=None):
@@ -388,14 +394,29 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.mainLayout.addLayout(self.inputOutputButtonLayout)
 
 		self.outputSelectButton = QtWidgets.QPushButton("Select")
-		self.outputCancelButton = QtWidgets.QPushButton("Cancel")
+		self.outputSelectButton.clicked.connect(self.selectOutPutLabel)
+		self.outputCancelButton = QtWidgets.QPushButton("Clear")
+		self.outputCancelButton.clicked.connect(self.clearOutputLabel)
 		self.inputSelectButton = QtWidgets.QPushButton("Select")
-		self.inputCancelButton = QtWidgets.QPushButton("Cancel")
+		self.inputSelectButton.clicked.connect(self.selectInPutLabel)
+		self.inputCancelButton = QtWidgets.QPushButton("Clear")
+		self.inputCancelButton.clicked.connect(self.clearInputLabel)
 
 		self.inputOutputButtonLayout.addWidget(self.outputSelectButton)
 		self.inputOutputButtonLayout.addWidget(self.outputCancelButton)
 		self.inputOutputButtonLayout.addWidget(self.inputSelectButton)
 		self.inputOutputButtonLayout.addWidget(self.inputCancelButton)
+
+		self.outputAttributeLayout = QtWidgets.QHBoxLayout()
+		self.mainLayout.addLayout(self.outputAttributeLayout)
+
+		self.outputAttributeLabel = QtWidgets.QLabel("Output Attributes : ")
+		self.outputAttributeLineEdit = QtWidgets.QLineEdit()
+		self.outputAttributeClearButton = QtWidgets.QPushButton("Clear")
+		self.outputAttributeClearButton.clicked.connect(self.clearOutputA)
+		self.outputAttributeLayout.addWidget(self.outputAttributeLabel)
+		self.outputAttributeLayout.addWidget(self.outputAttributeLineEdit)
+		self.outputAttributeLayout.addWidget(self.outputAttributeClearButton)
 
 		self.transformLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.transformLayout)
@@ -413,7 +434,7 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.transformRadio.addButton(self.translateBTN)
 		self.transformRadio.addButton(self.rotateBTN)
 		self.transformRadio.addButton(self.scaleBTN)
-		self.transformRadio.buttonClicked.connect(self.doAddTransform)
+		# self.transformRadio.buttonClicked.connect(self.doAddTransform)
 
 
 		self.axisLayout = QtWidgets.QHBoxLayout()
@@ -432,7 +453,7 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.axisRadio.addButton(self.XBTN)
 		self.axisRadio.addButton(self.YBTN)
 		self.axisRadio.addButton(self.ZBTN)
-		self.axisRadio.buttonClicked.connect(self.doAddAxis)
+		# self.axisRadio.buttonClicked.connect(self.doAddAxis)
 
 		self.buttonLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.buttonLayout)
@@ -445,15 +466,35 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.buttonLayout.addWidget(self.connectButton)
 		self.buttonLayout.addWidget(self.backButton)
 
-	def doAddTransform(self):
+	# def doAddTransform(self):
 		transformChecked = self.transformRadio.checkedButton()
 		print(transformChecked.text())
 
-	def doAddAxis(self):
+	# def doAddAxis(self):
 		axisChecked = self.axisRadio.checkedButton()
 		print(axisChecked.text())
+	
+	def selectOutPutLabel(self):
+		outputLabel = cmds.ls(sl=True)
+		cmds.select(cl=True)
+		self.outputLineEdit.setText(outputLabel[0])
+	def selectInPutLabel(self):
+		inputLabel = cmds.ls(sl=True)
+		cmds.select(cl=True)
+		self.inputLineEdit.setText(inputLabel[0])
+	def clearOutputA(self):
+		self.outputAttributeLineEdit.setText("")
+	def clearInputLabel(self):
+		self.inputLineEdit.setText("")
+	def clearOutputLabel(self):
+		self.outputLineEdit.setText("")
 	def doConnection(self):
-		pass
+		output = self.outputLineEdit.text()
+		outputAttr = self.outputAttributeLineEdit.text()
+		input = self.inputLineEdit.text()
+		inputTransform = self.transformRadio.checkedButton().text()
+		inputAxis = self.axisRadio.checkedButton().text()
+		STIL.connectionEditor(output,outputAttr,input,inputTransform,inputAxis)
 	def goBack(self):
 		self.close()
 		run()
