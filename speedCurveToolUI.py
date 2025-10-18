@@ -2,11 +2,13 @@ try:
 	from PySide6 import QtCore, QtGui, QtWidgets
 	from shiboken6 import wrapInstance
 	from PySide6.QtGui import QIntValidator
+	import maya.cmds as cmds
 
 except:
 	from PySide2 import QtCore, QtGui, QtWidgets
 	from shiboken2 import wrapInstance
 	from PySide2.QtGui import QIntValidator
+	import maya.cmds as cmds
 
 import importlib
 import maya.OpenMayaUI as omui
@@ -189,13 +191,13 @@ class CurveCreatorTool(QtWidgets.QDialog):
 
 		self.mainLayout = QtWidgets.QVBoxLayout()
 		self.setLayout(self.mainLayout)
-		# self.setStyleSheet("background-color : qlineargradient(x1:0,y1:0,x2:0,y2:1,stop : 0 #B1DBA4,stop:1 #667D5F);")
+		self.setStyleSheet("background-color : #181A2F;")
 
 		self.shapesLabel = QtWidgets.QLabel("Select shape")
 		self.shapesLabel.setStyleSheet(
 			'''
 			background-color: 0;
-			color : #000000;
+			color : White;
 			font-size : 20px;
 			font-family : "Comic Sans MS", cursive;
 			font-weight : bold;
@@ -210,7 +212,14 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		self.primitiveListWidgets.setViewMode(QtWidgets.QListView.IconMode)
 		self.primitiveListWidgets.setMovement(QtWidgets.QListView.Static)
 		self.primitiveListWidgets.setResizeMode(QtWidgets.QListView.Adjust)
-		self.primitiveListWidgets.setStyleSheet('background-color : black;')
+		self.primitiveListWidgets.setStyleSheet(
+			'''
+			background-color : White; 
+			color : Black;
+			font-size : 8px;
+			font-family : "Comic Sans MS", cursive;
+			'''
+			)
 		self.mainLayout.addWidget(self.primitiveListWidgets)
 
 
@@ -222,10 +231,11 @@ class CurveCreatorTool(QtWidgets.QDialog):
 
 		self.colorPickerButton = QtWidgets.QPushButton("Open Color Wheel")
 		self.colorPickerButton.clicked.connect(self.pickColor)
+		self.colorPickerButton.setStyleSheet("""background-color : #242E49; font-family : "Comic Sans MS", cursive;""")
 
 		self.colorDisplay = QtWidgets.QLabel()
 		self.colorDisplay.setFixedSize(60, 60)
-		self.colorDisplay.setStyleSheet("background-color: rgb(0,0,0); border-radius: 4px;")
+		self.colorDisplay.setStyleSheet("background-color: rgb(255,255,255);")
 
 		self.colorLayout.addWidget(self.colorPickerButton)
 		self.colorLayout.addWidget(self.colorDisplay)
@@ -234,7 +244,9 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		self.mainLayout.addLayout(self.nameLayout)
 
 		self.nameLabel = QtWidgets.QLabel("Name : ")
+		self.nameLabel.setStyleSheet('font-family : "Comic Sans MS", cursive;')
 		self.nameLineEdit = QtWidgets.QLineEdit()
+		self.nameLineEdit.setStyleSheet("background-color : #37415C")
 
 		self.nameLayout.addWidget(self.nameLabel)
 		self.nameLayout.addWidget(self.nameLineEdit)
@@ -244,10 +256,14 @@ class CurveCreatorTool(QtWidgets.QDialog):
 
 		self.sideComboBox = QtWidgets.QComboBox()
 		self.sideLabel = QtWidgets.QLabel("Side : ")
+		self.sideLabel.setStyleSheet('font-family : "Comic Sans MS", cursive;')
 		self.sideComboBox.addItems(config.SIDE)
+		self.sideComboBox.setStyleSheet("background-color : #FDA481; color : Black")
 		self.suffixLabel = QtWidgets.QLabel("Suffix : ")
+		self.suffixLabel.setStyleSheet('font-family : "Comic Sans MS", cursive;')
 		self.suffixComboBox = QtWidgets.QComboBox()
 		self.suffixComboBox.addItems(config.SUFFIX)
+		self.suffixComboBox.setStyleSheet("background-color : #FDA481; color : Black")
 
 		self.suffixSideLayout.addWidget(self.sideLabel)
 		self.suffixSideLayout.addWidget(self.sideComboBox)
@@ -260,8 +276,38 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		
 		self.createButton = QtWidgets.QPushButton("Create")
 		self.createButton.clicked.connect(self.doCreateCurve)
+		self.createButton.setStyleSheet(
+			'''
+				QPushButton {
+						background-color : #B4182D; 
+						color : White;
+						font-family : "Comic Sans MS", cursive;
+				}
+				QPushButton:hover {
+						background-color : #729C8D;
+				}
+				QPushButton:pressed {
+						background-color : #D3FFD1;
+				}
+			'''
+		)
 		self.backButton = QtWidgets.QPushButton("Back")
 		self.backButton.clicked.connect(self.goBack)
+		self.backButton.setStyleSheet(
+			'''
+				QPushButton {
+						background-color : #54162B; 
+						color : White;
+						font-family : "Comic Sans MS", cursive;
+				}
+				QPushButton:hover {
+						background-color : #D93E30;
+				}
+				QPushButton:pressed {
+						background-color : #FFCBC7;
+				}
+			'''
+		)
 
 		self.buttonLayout.addWidget(self.createButton)
 		self.buttonLayout.addWidget(self.backButton)
@@ -312,15 +358,20 @@ class AddAttributesTool(QtWidgets.QDialog):
 
 		self.mainLayout = QtWidgets.QVBoxLayout()
 		self.setLayout(self.mainLayout)
+		self.setStyleSheet("background-color : #577E89;")
 
 		self.nameTypeLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.nameTypeLayout)
 
 		self.nameLabel = QtWidgets.QLabel("Name : ")
+		self.nameLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : White""")
 		self.nameLineEdit = QtWidgets.QLineEdit()
+		self.nameLineEdit.setStyleSheet("background-color : #6F9F9C;color : White")
 		self.typeLabel = QtWidgets.QLabel("Type : ")
+		self.typeLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : White""")
 		self.typeComboBox = QtWidgets.QComboBox()
 		self.typeComboBox.addItems(config.TYPE)
+		self.typeComboBox.setStyleSheet("""background-color : #6F9F9C;font-family : "Comic Sans MS", cursive; color : White;""")
 		self.nameTypeLayout.addWidget(self.nameLabel)
 		self.nameTypeLayout.addWidget(self.nameLineEdit)
 		self.nameTypeLayout.addWidget(self.typeLabel)
@@ -330,11 +381,15 @@ class AddAttributesTool(QtWidgets.QDialog):
 		self.mainLayout.addLayout(self.maxMinLayout)
 
 		self.maxLabel = QtWidgets.QLabel("Max : ")
+		self.maxLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : White""")
 		self.maxLineEdit = QtWidgets.QLineEdit()
 		self.maxLineEdit.setValidator(QIntValidator())
+		self.maxLineEdit.setStyleSheet("""background-color : #E2D8A5;font-family : "Comic Sans MS", cursive;color : Black""")
 		self.minLabel = QtWidgets.QLabel("Min : ")
+		self.minLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : White""")
 		self.minLineEdit = QtWidgets.QLineEdit()
 		self.minLineEdit.setValidator(QIntValidator())
+		self.minLineEdit.setStyleSheet("""background-color : #E2D8A5;font-family : "Comic Sans MS", cursive;color : Black""")
 		
 		self.maxMinLayout.addWidget(self.minLabel)
 		self.maxMinLayout.addWidget(self.minLineEdit)
@@ -346,8 +401,39 @@ class AddAttributesTool(QtWidgets.QDialog):
 		
 		self.addButton = QtWidgets.QPushButton("Add")
 		self.addButton.clicked.connect(self.doAddAttributes)
+		self.addButton.setStyleSheet(
+			'''
+				QPushButton {
+						background-color : #DEC484; 
+						color : White;
+						font-family : "Comic Sans MS", cursive;
+				}
+				QPushButton:hover {
+						background-color : #729C8D;
+				}
+				QPushButton:pressed {
+						background-color : #729C8D;
+				}
+			'''
+		)
+
 		self.backButton = QtWidgets.QPushButton("Back")
 		self.backButton.clicked.connect(self.goBack)
+		self.backButton.setStyleSheet(
+			'''
+				QPushButton {
+						background-color : #E1A36F; 
+						color : White;
+						font-family : "Comic Sans MS", cursive;
+				}
+				QPushButton:hover {
+						background-color : #D93E30;
+				}
+				QPushButton:pressed {
+						background-color : #D93E30;
+				}
+			'''
+		)
 
 		self.buttonLayout.addWidget(self.addButton)
 		self.buttonLayout.addWidget(self.backButton)
@@ -370,12 +456,15 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 
 		self.mainLayout = QtWidgets.QVBoxLayout()
 		self.setLayout(self.mainLayout)
+		self.setStyleSheet("background-color : #FFDECA;")
 
 		self.inputOutputLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.inputOutputLayout)
 
 		self.outputLabel = QtWidgets.QLabel("Output")
+		self.outputLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.inputLabel = QtWidgets.QLabel("Input")
+		self.inputLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 
 		
 		self.inputOutputLayout.addWidget(self.outputLabel)
@@ -385,7 +474,9 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.lineEditLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.lineEditLayout)
 		self.outputLineEdit = QtWidgets.QLineEdit()
+		self.outputLineEdit.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Blue;background-color : #F9B288""")
 		self.inputLineEdit = QtWidgets.QLineEdit()
+		self.inputLineEdit.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Red;background-color : #F9B288""")
 
 		self.lineEditLayout.addWidget(self.outputLineEdit)
 		self.lineEditLayout.addWidget(self.inputLineEdit)
@@ -395,12 +486,16 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 
 		self.outputSelectButton = QtWidgets.QPushButton("Select")
 		self.outputSelectButton.clicked.connect(self.selectOutPutLabel)
+		self.outputSelectButton.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black;background-color : #DCEAF7""")
 		self.outputCancelButton = QtWidgets.QPushButton("Clear")
 		self.outputCancelButton.clicked.connect(self.clearOutputLabel)
+		self.outputCancelButton.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black;background-color : #C4D6E7""")
 		self.inputSelectButton = QtWidgets.QPushButton("Select")
 		self.inputSelectButton.clicked.connect(self.selectInPutLabel)
+		self.inputSelectButton.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black;background-color : #DCEAF7""")
 		self.inputCancelButton = QtWidgets.QPushButton("Clear")
 		self.inputCancelButton.clicked.connect(self.clearInputLabel)
+		self.inputCancelButton.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black;background-color : #C4D6E7""")
 
 		self.inputOutputButtonLayout.addWidget(self.outputSelectButton)
 		self.inputOutputButtonLayout.addWidget(self.outputCancelButton)
@@ -411,9 +506,13 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.mainLayout.addLayout(self.outputAttributeLayout)
 
 		self.outputAttributeLabel = QtWidgets.QLabel("Output Attributes : ")
+		self.outputAttributeLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.outputAttributeLineEdit = QtWidgets.QLineEdit()
+		self.outputAttributeLineEdit.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Blue;background-color : #F7D379""")
 		self.outputAttributeClearButton = QtWidgets.QPushButton("Clear")
+		self.outputAttributeClearButton.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black;background-color : #F9B288""")
 		self.outputAttributeClearButton.clicked.connect(self.clearOutputA)
+
 		self.outputAttributeLayout.addWidget(self.outputAttributeLabel)
 		self.outputAttributeLayout.addWidget(self.outputAttributeLineEdit)
 		self.outputAttributeLayout.addWidget(self.outputAttributeClearButton)
@@ -422,9 +521,13 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.mainLayout.addLayout(self.transformLayout)
 
 		self.transformLabel = QtWidgets.QLabel("Transform : ")
+		self.transformLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.translateBTN = QtWidgets.QRadioButton("translate")
+		self.translateBTN.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.rotateBTN = QtWidgets.QRadioButton("rotate")
+		self.rotateBTN.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.scaleBTN = QtWidgets.QRadioButton("scale")
+		self.scaleBTN.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.rotateBTN.setChecked(True)
 		self.transformRadio = QtWidgets.QButtonGroup()
 		self.transformLayout.addWidget(self.transformLabel)
@@ -434,16 +537,18 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.transformRadio.addButton(self.translateBTN)
 		self.transformRadio.addButton(self.rotateBTN)
 		self.transformRadio.addButton(self.scaleBTN)
-		# self.transformRadio.buttonClicked.connect(self.doAddTransform)
-
 
 		self.axisLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.axisLayout)
 
 		self.axisLabel = QtWidgets.QLabel("Axis : ")
+		self.axisLabel.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.XBTN = QtWidgets.QRadioButton("X")
+		self.XBTN.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.YBTN = QtWidgets.QRadioButton("Y")
+		self.YBTN.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.ZBTN = QtWidgets.QRadioButton("Z")
+		self.ZBTN.setStyleSheet("""font-family : "Comic Sans MS", cursive;color : Black""")
 		self.ZBTN.setChecked(True)
 		self.axisRadio = QtWidgets.QButtonGroup()
 		self.axisLayout.addWidget(self.axisLabel)
@@ -453,26 +558,48 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.axisRadio.addButton(self.XBTN)
 		self.axisRadio.addButton(self.YBTN)
 		self.axisRadio.addButton(self.ZBTN)
-		# self.axisRadio.buttonClicked.connect(self.doAddAxis)
 
 		self.buttonLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.buttonLayout)
 
 		self.connectButton = QtWidgets.QPushButton("Connect")
 		self.connectButton.clicked.connect(self.doConnection)
+		self.connectButton.setStyleSheet(
+			'''
+				QPushButton {
+						background-color : #DCEAF7; 
+						color : Black;
+						font-family : "Comic Sans MS", cursive;
+				}
+				QPushButton:hover {
+						background-color : #729C8D;
+				}
+				QPushButton:pressed {
+						background-color : #729C8D;
+				}
+			'''
+		)
 		self.backButton = QtWidgets.QPushButton("Back")
 		self.backButton.clicked.connect(self.goBack)
+		self.backButton.setStyleSheet(
+			'''
+				QPushButton {
+						background-color : #C4D6E7; 
+						color : Black;
+						font-family : "Comic Sans MS", cursive;
+				}
+				QPushButton:hover {
+						background-color : #D93E30;
+				}
+				QPushButton:pressed {
+						background-color : #BF8986;
+						color : White;
+				}
+			'''
+		)
 
 		self.buttonLayout.addWidget(self.connectButton)
 		self.buttonLayout.addWidget(self.backButton)
-
-	# def doAddTransform(self):
-		transformChecked = self.transformRadio.checkedButton()
-		print(transformChecked.text())
-
-	# def doAddAxis(self):
-		axisChecked = self.axisRadio.checkedButton()
-		print(axisChecked.text())
 	
 	def selectOutPutLabel(self):
 		outputLabel = cmds.ls(sl=True)

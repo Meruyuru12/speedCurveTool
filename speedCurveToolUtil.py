@@ -4,94 +4,49 @@ import maya.cmds as cmds
 import maya.mel as mel
 importlib.reload(config)
 
-#ขาดใส่num
-def createCurve(name,side,suffix,selectShape,r,g,b):	
+#แก้ logic num แก้curve circle2d
+curve_counters = {} #{left_test_circle_ctrl : 1}
+
+def createCurve(name, side, suffix, selectShape, r, g, b):
+	global curve_counters
 	curveShape = selectShape
-	countName = ""
-	num =1
-
 	LOCSELS = cmds.ls(sl=True)
-	if not LOCSELS:
-		if side == "":
+	key = f"{side}_{name}_{curveShape}_{suffix}"
+	num = curve_counters.get(key, 1)
+
+	if side == "":
+		if name !="":
 			newname = f"{name}{num:02d}_{suffix}"
-		else :
+		else:
+			newname = f"{curveShape}{num:02d}_{suffix}"
+	else:
+		if name !="":
 			newname = f"{side}_{name}{num:02d}_{suffix}"
+		else:
+			newname = f"{side}_{curveShape}{num:02d}_{suffix}"
 
-		if config.SHAPE.get(curveShape):
-			if name != "":
-				curveName = mel.eval(config.SHAPE.get(curveShape))
-				cmds.rename(curveName,newname)
-				if newname == countName:
-					num += 1
-				else :
-					num = 1
-					countName = newname
-				cmds.select(newname)
+	if config.SHAPE.get(curveShape):
+		curveName = mel.eval(config.SHAPE.get(curveShape))
+		cmds.rename(curveName, newname)
 
-			else :
-				curveName = mel.eval(config.SHAPE.get(curveShape))
-				newCurveName = f"{curveShape}{num:02d}_{suffix}"
-				cmds.rename(curveName,newCurveName)
-				if newCurveName == countName:
-					num += 1
-				else :
-					num = 1
-					countName = newCurveName
-				cmds.select(newCurveName)
+		if not LOCSELS:
+			pass
+		else:
+			res = cmds.xform(LOCSELS, q=True, t=True, ws=True)
+			cmds.setAttr(f"{newname}.tx", res[0])
+			cmds.setAttr(f"{newname}.ty", res[1])
+			cmds.setAttr(f"{newname}.tz", res[2])
+			
+		cmds.setAttr(f"{newname}.overrideEnabled", 1)
+		cmds.setAttr(f"{newname}.overrideRGBColors", 1)
+		cmds.setAttr(f"{newname}.overrideColorR", r)
+		cmds.setAttr(f"{newname}.overrideColorG", g)
+		cmds.setAttr(f"{newname}.overrideColorB", b)
 
-		sels = cmds.ls(sl=True)
+		curve_counters[key] = num + 1
 
-		if not sels:
-			return
-		cmds.setAttr(f"{sels[0]}.overrideEnabled",1)
-		cmds.setAttr(f"{sels[0]}.overrideRGBColors",1)
-		cmds.setAttr(f"{sels[0]}.overrideColorR",r)
-		cmds.setAttr(f"{sels[0]}.overrideColorG",g)
-		cmds.setAttr(f"{sels[0]}.overrideColorB",b)
-		cmds.select(cl=True)
-	else:	
-		res = cmds.xform(LOCSELS, q = True, t = True, ws = True)
-		if side == "":
-			newname = f"{name}{num:02d}_{suffix}"
-		else :
-			newname = f"{side}_{name}{num:02d}_{suffix}"
+	cmds.select(cl=True)
 
-		if config.SHAPE.get(curveShape):
-			if name != "":
-				curveName = mel.eval(config.SHAPE.get(curveShape))
-				cmds.rename(curveName,newname)
-				if newname == countName:
-					num += 1
-				else :
-					num = 1
-					countName = newname
-				cmds.select(newname)
-				cmds.setAttr("{}.tx".format(newname),(res[0]))
-				cmds.setAttr("{}.ty".format(newname),(res[1]))
-				cmds.setAttr("{}.tz".format(newname),(res[2]))
-			else :
-				curveName = mel.eval(config.SHAPE.get(curveShape))
-				newCurveName = f"{curveShape}{num:02d}_{suffix}"
-				cmds.rename(curveName,newCurveName)
-				if newCurveName == countName:
-					num += 1
-				else :
-					num = 1
-					countName = newCurveName
-				cmds.select(newCurveName)
-				cmds.setAttr("{}.tx".format(newCurveName),(res[0]))
-				cmds.setAttr("{}.ty".format(newCurveName),(res[1]))
-				cmds.setAttr("{}.tz".format(newCurveName),(res[2]))
-		sels = cmds.ls(sl=True)
-
-		if not sels:
-			return
-		cmds.setAttr(f"{sels[0]}.overrideEnabled",1)
-		cmds.setAttr(f"{sels[0]}.overrideRGBColors",1)
-		cmds.setAttr(f"{sels[0]}.overrideColorR",r)
-		cmds.setAttr(f"{sels[0]}.overrideColorG",g)
-		cmds.setAttr(f"{sels[0]}.overrideColorB",b)
-		cmds.select(cl=True)
 #finish
 def addAttributes(name,type,maxValue,minValue):
 	sel = cmds.ls(selection=True)
