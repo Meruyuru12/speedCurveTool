@@ -22,3 +22,104 @@ SIDE = ["","left","right","mid"]
 SUFFIX = ["CC","cc","CTRL","ctrl"]
 PADDING = [1,2,3,4]
 TYPE = ["Keyable","Displayable","Hidden"] 
+GREENHOVERBUTTON = '''
+				QPushButton {
+					background-color : #col; 
+					color : Black;
+					border-radius : 1px;
+					font-family : "Comic Sans MS", cursive;
+					padding : 8px;
+				}
+				QPushButton:hover {
+					background-color : #B9E3B6;
+				}
+				QPushButton:pressed {
+					background-color : #D3F7D0;
+				}
+			'''
+REDHOVERBUTTON = '''
+				QPushButton {
+					background-color : #col;
+					color : Black;
+					border-radius : 1px;
+					font-family : "Comic Sans MS", cursive;
+					padding : 8px;
+				}
+				QPushButton:hover {
+					background-color : #D93E30;
+				}
+				QPushButton:pressed {
+					background-color : #FFCAC4;
+				}
+				
+			'''
+CURVEHOVERBUTTON = '''
+				QPushButton {
+					background-color : #DEB68E;
+					color : white;
+					border-radius : 10px;
+					font-size : 20px;
+					padding : 8px;
+					font-family : "Comic Sans MS", cursive;
+					font-weight : bold;
+				}
+				QPushButton:hover {
+					background-color : #629C7D;
+				}
+				QPushButton:pressed {
+					background-color : #B1F0CF;
+				}
+			'''
+ADDATTRHOVERBUTTON = '''
+				QPushButton {
+					background-color : #A67B58;
+					color : white;
+					border-radius : 10px;
+					font-size : 20px;
+					padding : 8px;
+					font-family : "Comic Sans MS", cursive;
+					font-weight : bold;
+				}
+				QPushButton:hover {
+					background-color : #D4AD77;
+				}
+				QPushButton:pressed {
+					background-color : #EDD3AF;
+				}
+				
+			'''
+CONNECTHOVERBUTTON = '''
+				QPushButton {
+					background-color : #5C3210;
+					color : white;
+					border-radius : 10px;
+					font-size : 20px;
+					padding : 8px;
+					font-family : "Comic Sans MS", cursive;
+					font-weight : bold;
+				}
+				QPushButton:hover {
+					background-color : #A48DB5;
+				}
+				QPushButton:pressed {
+					background-color : #DDC2F2;
+				}
+				
+			'''
+EXITHOVERBUTTON = '''
+				QPushButton {
+					background-color : #AB483A;
+					color : white;
+					border-radius : 10px;
+					font-size : 20px;
+					padding : 8px;
+					font-family : "Comic Sans MS", cursive;
+					font-weight : bold;
+				}
+				QPushButton:hover {
+					background-color : #A16480;
+				}
+				QPushButton:pressed {
+					background-color : #DE8EB4;
+				}
+			'''

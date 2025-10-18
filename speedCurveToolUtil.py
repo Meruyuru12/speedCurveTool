@@ -4,9 +4,8 @@ import maya.cmds as cmds
 import maya.mel as mel
 importlib.reload(config)
 
-#แก้ logic num แก้curve circle2d
 curve_counters = {} #{left_test_circle_ctrl : 1}
-
+#finish
 def createCurve(name, side, suffix, selectShape, r, g, b):
 	global curve_counters
 	curveShape = selectShape
@@ -46,7 +45,6 @@ def createCurve(name, side, suffix, selectShape, r, g, b):
 		curve_counters[key] = num + 1
 
 	cmds.select(cl=True)
-
 #finish
 def addAttributes(name,type,maxValue,minValue):
 	sel = cmds.ls(selection=True)
