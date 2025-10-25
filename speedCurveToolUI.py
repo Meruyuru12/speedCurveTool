@@ -33,9 +33,9 @@ class SpeedCurveTool(QtWidgets.QDialog):
 		self.setStyleSheet("background-color : qlineargradient(x1:0,y1:0,x2:0,y2:1,stop : 0 #BEA896,stop:1 #8D7B6C);")
 
 		self.imageLabel01 = QtWidgets.QLabel()
-		self.imagePixmap01 = QtGui.QPixmap(f"{RESOURCES_PATH}/images/mambo.png")
+		self.imagePixmap01 = QtGui.QPixmap(f"{RESOURCES_PATH}/images/speedCurveLogo.png")
 		scaled_pixmap01 = self.imagePixmap01.scaled(
-			QtCore.QSize(128,128),
+			QtCore.QSize(600,200),
 			QtCore.Qt.KeepAspectRatio,
 			QtCore.Qt.SmoothTransformation
 		)

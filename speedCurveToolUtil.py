@@ -53,7 +53,10 @@ def addAttributes(name,type,maxValue,minValue):
 	value = name
 
 	if not cmds.attributeQuery(value, node=ctrl, exists=True):
-		cmds.addAttr(ctrl, longName=value, attributeType="double", defaultValue=1, maxValue = float(maxValue) , minValue = float(minValue))
+		if len(maxValue) == 0 and len(minValue) == 0:
+			cmds.addAttr(ctrl, longName=value, attributeType="double")
+		else :
+			cmds.addAttr(ctrl, longName=value, attributeType="double", defaultValue=1, maxValue = float(maxValue) , minValue = float(minValue))
 
 	if type == "Keyable":
 		cmds.setAttr(ctrl + ".{}".format(value), keyable=True, edit=True)
