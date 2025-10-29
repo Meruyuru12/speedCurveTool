@@ -3,12 +3,14 @@ try:
 	from shiboken6 import wrapInstance
 	from PySide6.QtGui import QIntValidator
 	import maya.cmds as cmds
+	import maya.mel as mel
 
 except:
 	from PySide2 import QtCore, QtGui, QtWidgets
 	from shiboken2 import wrapInstance
 	from PySide2.QtGui import QIntValidator
 	import maya.cmds as cmds
+	import maya.mel as mel
 
 import importlib
 import maya.OpenMayaUI as omui
@@ -114,7 +116,7 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		self.mainLayout = QtWidgets.QVBoxLayout()
 		self.setLayout(self.mainLayout)
 		self.setStyleSheet("""
-			background-color : #181A2F;
+			background-color : #76799C;
 			font-family : "Comic Sans MS", cursive;
 			color : White;
 		""")
@@ -137,7 +139,6 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		self.primitiveListWidgets.setSpacing(12)
 		self.primitiveListWidgets.setViewMode(QtWidgets.QListView.IconMode)
 		self.primitiveListWidgets.setMovement(QtWidgets.QListView.Static)
-		self.primitiveListWidgets.setResizeMode(QtWidgets.QListView.Adjust)
 		self.primitiveListWidgets.setStyleSheet(
 			'''
 			background-color : White; 
@@ -161,7 +162,7 @@ class CurveCreatorTool(QtWidgets.QDialog):
 
 		self.colorDisplay = QtWidgets.QLabel()
 		self.colorDisplay.setFixedSize(60, 60)
-		self.colorDisplay.setStyleSheet("background-color: rgb(255,255,255);")
+		self.colorDisplay.setStyleSheet("background-color: rgb(255,0,0);")
 
 		self.colorLayout.addWidget(self.colorPickerButton)
 		self.colorLayout.addWidget(self.colorDisplay)
@@ -193,6 +194,40 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		self.suffixSideLayout.addWidget(self.suffixLabel)
 		self.suffixSideLayout.addWidget(self.suffixComboBox)
 
+		self.groupCheckBox = QtWidgets.QCheckBox("CreateGroup")
+		self.groupCheckBox.setStyleSheet("""color = White""")
+		self.mainLayout.addWidget(self.groupCheckBox)
+
+		self.constrainCheckBox = QtWidgets.QCheckBox("Constrain to Joint")
+		self.constrainCheckBox.setStyleSheet("""color = White""")
+		self.mainLayout.addWidget(self.constrainCheckBox)
+
+		self.sizeLayout = QtWidgets.QHBoxLayout()
+		self.mainLayout.addLayout(self.sizeLayout)
+
+		self.sizeLabel = QtWidgets.QLabel("Size : ")
+		self.sizeLineEdit = QtWidgets.QLineEdit("1")
+		self.sizeLineEdit.setValidator(QIntValidator())
+		self.sizeLineEdit.setStyleSheet("""background-color : #181A2F;color = White""")
+		self.sizeLayout.addWidget(self.sizeLabel)
+		self.sizeLayout.addWidget(self.sizeLineEdit)
+
+		self.axisLayout = QtWidgets.QHBoxLayout()
+		self.mainLayout.addLayout(self.axisLayout)
+
+		self.axisLabel = QtWidgets.QLabel("Axis : ")
+		self.XBTN = QtWidgets.QRadioButton("X")
+		self.YBTN = QtWidgets.QRadioButton("Y")
+		self.ZBTN = QtWidgets.QRadioButton("Z")
+		self.YBTN.setChecked(True)
+		self.axisRadio = QtWidgets.QButtonGroup()
+		self.axisLayout.addWidget(self.axisLabel)
+		self.axisLayout.addWidget(self.XBTN)
+		self.axisLayout.addWidget(self.YBTN)
+		self.axisLayout.addWidget(self.ZBTN)
+		self.axisRadio.addButton(self.XBTN)
+		self.axisRadio.addButton(self.YBTN)
+		self.axisRadio.addButton(self.ZBTN)
 
 		self.buttonLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.buttonLayout)
@@ -238,8 +273,11 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		side = self.sideComboBox.currentText()
 		suffix = self.suffixComboBox.currentText()
 		curveShape = self.primitiveListWidgets.currentItem().text()
-		print("curveShape")
-		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue)
+		sizeQSpin = int(self.sizeLineEdit.text())
+		inputAxis = self.axisRadio.checkedButton().text()
+		check = self.groupCheckBox.isChecked()
+		constrain = self.constrainCheckBox.isChecked()
+		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,sizeQSpin,inputAxis,check,constrain)
 
 	def goBack(self):
 		self.close()
@@ -382,12 +420,16 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.outputAttributeLabel = QtWidgets.QLabel("Output Attributes : ")
 		self.outputAttributeLineEdit = QtWidgets.QLineEdit()
 		self.outputAttributeLineEdit.setStyleSheet("""color : Blue;background-color : #F7D379""")
+		self.outputAttributeSelectButton = QtWidgets.QPushButton("Select")
+		self.outputAttributeSelectButton.setStyleSheet(config.GREENHOVERBUTTON.replace("#col","#DCEAF7"))
+		self.outputAttributeSelectButton.clicked.connect(self.selectOutputA)
 		self.outputAttributeClearButton = QtWidgets.QPushButton("Clear")
 		self.outputAttributeClearButton.setStyleSheet(config.REDHOVERBUTTON.replace("#col","#C4D6E7"))
 		self.outputAttributeClearButton.clicked.connect(self.clearOutputA)
 
 		self.outputAttributeLayout.addWidget(self.outputAttributeLabel)
 		self.outputAttributeLayout.addWidget(self.outputAttributeLineEdit)
+		self.outputAttributeLayout.addWidget(self.outputAttributeSelectButton)
 		self.outputAttributeLayout.addWidget(self.outputAttributeClearButton)
 
 		self.transformLayout = QtWidgets.QHBoxLayout()
@@ -446,6 +488,10 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		inputLabel = cmds.ls(sl=True)
 		cmds.select(cl=True)
 		self.inputLineEdit.setText(inputLabel[0])
+	def selectOutputA(self):
+		obj = cmds.ls(sl=True)[0]
+		selectedAttb = mel.eval('channelBox -q -selectedMainAttributes mainChannelBox;')
+		self.outputAttributeLineEdit.setText(selectedAttb[0])
 	def clearOutputA(self):
 		self.outputAttributeLineEdit.setText("")
 	def clearInputLabel(self):
