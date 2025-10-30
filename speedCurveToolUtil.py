@@ -30,7 +30,7 @@ def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,cons
 		curveName = mel.eval(config.SHAPE.get(curveShape))
 		cmds.rename(curveName, newname)
 		list.append(newname)
-
+		ro = cmds.xform(LOCSELS,q=True, ws= True , ro = True)
 		if len(LOCSELS) == 0:
 			pass
 		else:
@@ -54,6 +54,12 @@ def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,cons
 		if check == True :
 			grp01 = cmds.group(n = f"{newname}_grp")
 		if constrain == True:
+			try:
+				cmds.setAttr(f"{grp01}.rx", ro[0])
+				cmds.setAttr(f"{grp01}.ry", ro[1])
+				cmds.setAttr(f"{grp01}.rz", ro[2])
+			except:
+				pass
 			cmds.parentConstraint(list[1],list[0])
 		curve_counters[key] = num + 1
 

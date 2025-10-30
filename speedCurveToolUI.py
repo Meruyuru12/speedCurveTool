@@ -207,7 +207,6 @@ class CurveCreatorTool(QtWidgets.QDialog):
 
 		self.sizeLabel = QtWidgets.QLabel("Size : ")
 		self.sizeLineEdit = QtWidgets.QLineEdit("1")
-		self.sizeLineEdit.setValidator(QIntValidator())
 		self.sizeLineEdit.setStyleSheet("""background-color : #181A2F;color = White""")
 		self.sizeLayout.addWidget(self.sizeLabel)
 		self.sizeLayout.addWidget(self.sizeLineEdit)
@@ -234,11 +233,11 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		
 		self.createButton = QtWidgets.QPushButton("Create")
 		self.createButton.clicked.connect(self.doCreateCurve)
-		self.createButton.setStyleSheet(config.REDHOVERBUTTON.replace("#col","#B4182D"))
+		self.createButton.setStyleSheet(config.GREENHOVERBUTTON.replace("#col","#B4182D"))
 
 		self.backButton = QtWidgets.QPushButton("Back")
 		self.backButton.clicked.connect(self.goBack)
-		self.backButton.setStyleSheet(config.REDHOVERBUTTON.replace("#col","#54162B"))
+		self.backButton.setStyleSheet(config.REDHOVERBUTTON.replace("#col","#963858"))
 
 		self.buttonLayout.addWidget(self.createButton)
 		self.buttonLayout.addWidget(self.backButton)
@@ -273,11 +272,11 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		side = self.sideComboBox.currentText()
 		suffix = self.suffixComboBox.currentText()
 		curveShape = self.primitiveListWidgets.currentItem().text()
-		sizeQSpin = int(self.sizeLineEdit.text())
+		sizeValue = float(self.sizeLineEdit.text())
 		inputAxis = self.axisRadio.checkedButton().text()
 		check = self.groupCheckBox.isChecked()
 		constrain = self.constrainCheckBox.isChecked()
-		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,sizeQSpin,inputAxis,check,constrain)
+		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,sizeValue,inputAxis,check,constrain)
 
 	def goBack(self):
 		self.close()
