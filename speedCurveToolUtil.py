@@ -4,8 +4,8 @@ import maya.cmds as cmds
 import maya.mel as mel
 importlib.reload(config)
 
-curve_counters = {} #{left_test_circle_ctrl : 1}
-#finish
+curve_counters = {}
+
 def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,constrain):
 	global curve_counters
 	curveShape = selectShape
@@ -64,7 +64,7 @@ def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,cons
 		curve_counters[key] = num + 1
 
 	cmds.select(cl=True)
-#finish
+
 def addAttributes(name,type,maxValue,minValue):
 	sel = cmds.ls(selection=True)
 	ctrl = sel[0]
@@ -84,7 +84,7 @@ def addAttributes(name,type,maxValue,minValue):
 		cmds.setAttr(ctrl + ".{}".format(value), channelBox=True, edit=True)
 	if type == "Hidden":
 		cmds.setAttr(ctrl + ".{}".format(value), channelBox=False, edit=False)
-#finish
+
 def connectionEditor(output,outputAttr,input,inputTransform,inputAxis):
 	outputName = f"{output}.{outputAttr}"
 	inputName = f"{input}.{inputTransform}{inputAxis}"

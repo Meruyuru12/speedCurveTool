@@ -249,7 +249,6 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		for prim in prims:
 			item = QtWidgets.QListWidgetItem(prim)
 			item.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, f"{prim}.png")))
-			# item.setText(None)
 			self.primitiveListWidgets.addItem(item)
 
 	def pickColor(self):
@@ -376,7 +375,6 @@ class ConnectionEditorTool(QtWidgets.QDialog):
 		self.inputLabel = QtWidgets.QLabel("Input")
 		
 		self.inputOutputLayout.addWidget(self.outputLabel)
-		# self.inputOutputLayout.addStretch()
 		self.inputOutputLayout.addWidget(self.inputLabel)
 
 		self.lineEditLayout = QtWidgets.QHBoxLayout()
