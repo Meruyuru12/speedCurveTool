@@ -6,11 +6,11 @@ importlib.reload(config)
 
 curve_counters = {}
 
-def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,constrain):
+def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, group,constrain):
 	global curve_counters
 	curveShape = selectShape
 	list = []
-	LOCSELS = cmds.ls(sl=True)
+	LOCSELS = cmds.ls(sl=True)[0]
 	list.append(LOCSELS)
 	key = f"{side}_{name}_{curveShape}_{suffix}"
 	num = curve_counters.get(key, 1)
@@ -51,7 +51,7 @@ def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,cons
 		cmds.setAttr(f"{newname}.overrideColorG", g)
 		cmds.setAttr(f"{newname}.overrideColorB", b)
 		cmds.makeIdentity( f'{newname}', apply=True, translate=True, rotate =True , scale = True)
-		if check == True :
+		if group == True :
 			grp01 = cmds.group(n = f"{newname}_grp")
 		if constrain == True:
 			try:
@@ -66,9 +66,9 @@ def createCurve(name, side, suffix, selectShape, r, g, b, size, axis, check,cons
 	cmds.select(cl=True)
 
 def addAttributes(name,type,maxValue,minValue):
-	sel = cmds.ls(selection=True)
-	ctrl = sel[0]
-
+	ctrl = cmds.ls(selection=True)[0]
+	if not ctrl:
+		return
 	value = name
 
 	if not cmds.attributeQuery(value, node=ctrl, exists=True):
@@ -78,12 +78,12 @@ def addAttributes(name,type,maxValue,minValue):
 			cmds.addAttr(ctrl, longName=value, attributeType="double", defaultValue=0, maxValue = float(maxValue) , minValue = float(minValue))
 
 	if type == "Keyable":
-		cmds.setAttr(ctrl + ".{}".format(value), keyable=True, edit=True)
+		cmds.setAttr(f"{ctrl}.{value}", keyable=True, edit=True)
 
 	if type == "Displayable":
-		cmds.setAttr(ctrl + ".{}".format(value), channelBox=True, edit=True)
+		cmds.setAttr(f"{ctrl}.{value}", channelBox=True, edit=True)
 	if type == "Hidden":
-		cmds.setAttr(ctrl + ".{}".format(value), channelBox=False, edit=False)
+		cmds.setAttr(f"{ctrl}.{value}", channelBox=False, edit=False)
 
 def connectionEditor(output,outputAttr,input,inputTransform,inputAxis):
 	outputName = f"{output}.{outputAttr}"

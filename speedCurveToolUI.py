@@ -149,10 +149,6 @@ class CurveCreatorTool(QtWidgets.QDialog):
 			)
 		self.mainLayout.addWidget(self.primitiveListWidgets)
 
-
-		self.shapesLayout = QtWidgets.QHBoxLayout()
-		self.mainLayout.addLayout(self.shapesLayout)
-
 		self.colorLayout = QtWidgets.QHBoxLayout()
 		self.mainLayout.addLayout(self.colorLayout)
 
@@ -252,15 +248,11 @@ class CurveCreatorTool(QtWidgets.QDialog):
 			self.primitiveListWidgets.addItem(item)
 
 	def pickColor(self):
-		color = QtWidgets.QColorDialog.getColor(QtGui.QColor(0, 0, 0), self)
+		color = QtWidgets.QColorDialog.getColor(QtGui.QColor(255, 0, 0), self)
 		if color.isValid():
-			r = color.redF()
-			g = color.greenF()
-			b = color.blueF()
-
-			self.colorRed = r
-			self.colorGreen = g
-			self.colorBlue = b
+			self.colorRed = color.redF()
+			self.colorGreen = color.greenF()
+			self.colorBlue = color.blueF()
 
 			self.colorDisplay.setStyleSheet(
                 f"background-color: rgb({color.red()}, {color.green()}, {color.blue()}); border-radius: 4px;")
@@ -273,9 +265,9 @@ class CurveCreatorTool(QtWidgets.QDialog):
 		curveShape = self.primitiveListWidgets.currentItem().text()
 		sizeValue = float(self.sizeLineEdit.text())
 		inputAxis = self.axisRadio.checkedButton().text()
-		check = self.groupCheckBox.isChecked()
+		group = self.groupCheckBox.isChecked()
 		constrain = self.constrainCheckBox.isChecked()
-		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,sizeValue,inputAxis,check,constrain)
+		STIL.createCurve(name,side,suffix,curveShape,self.colorRed,self.colorGreen,self.colorBlue,sizeValue,inputAxis,group,constrain)
 
 	def goBack(self):
 		self.close()
